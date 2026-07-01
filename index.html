@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Linux - Start</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="alternate" type="application/rss+xml" title="Society Linux RSS Feed" href="feed.xml">
+</head>
+<body>
+
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="index.html">Home</a>
+    <a href="assets/tabs/download.html">Downloads</a>
+    <a href="assets/tabs/about.html">About</a>
+    <a href="assets/tabs/docs.html">Docs</a>
+    <a href="assets/tabs/feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+        <h3>Welcome to the Webpage of Society Linux!</h3>
+        <p>You will Get Familar Soon with Society Linux we are At the moment only a Beta (Shell script) but we offically have
+            a Kind of AUR in the Shell script its Called the SLR aka the Society Linux Repository while its Very Small like less than 20 packages so very light weight only
+            a Few Kilobytes (KB) we ofc add more content later but we made progress!
+        </p>
+
+        <p class="footer-note">But anyways This Site will Get Updates and stuff maybe a Different Background Color</p>
+
+<div style="background-color: #111; border: 1px solid #333; padding: 20px; border-radius: 5px; font-family: monospace; max-width: 500px; margin-top: 20px;">
+    <h3 style="color: #00ff00; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 8px;">[ GLOBAL NETWORK CLOCKS ]</h3>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="color: #aaa;">NEW YORK (EST):</span>
+        <span id="clock-ny" style="color: #00ff00;">00:00:00</span>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="color: #aaa;">LONDON (GMT):</span>
+        <span id="clock-lon" style="color: #00ff00;">00:00:00</span>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+        <span style="color: #aaa;">TOKYO (JST):</span>
+        <span id="clock-tyo" style="color: #00ff00;">00:00:00</span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between;">
+        <span style="color: #aaa;">BERLIN (GMT):</span>
+        <span id="clock-ber" style="color: #00ff00;">00:00:00</span>
+    </div>
+</div>
+
+<script>
+function updateClocks() {
+    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+
+    // Update New York Time
+    document.getElementById('clock-ny').innerText = new Date().toLocaleTimeString('en-US', { ...options, timeZone: 'America/New_York' });
+
+    // Update London Time
+    document.getElementById('clock-lon').innerText = new Date().toLocaleTimeString('en-GB', { ...options, timeZone: 'Europe/London' });
+
+    // Update Tokyo Time
+    document.getElementById('clock-tyo').innerText = new Date().toLocaleTimeString('ja-JP', { ...options, timeZone: 'Asia/Tokyo' });
+
+    // Update Berlin Time
+    document.getElementById('clock-ber').innerText = new Date().toLocaleTimeString('de-DE', { ...options, timeZone: 'Europe/Berlin' });
+}
+
+// Run the clock immediately, then update it every 1 second
+updateClocks();
+setInterval(updateClocks, 1000);
+</script>
+    </article>
+</main>
+
+</body>
+</html>

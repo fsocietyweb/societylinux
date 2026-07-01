@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Linux - Downloads</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <style>
+        a {
+            color: white;
+        }
+
+        a:hover {
+            color: #00ff33;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="../../index.html">Home</a>
+    <a href="download.html">Downloads</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <a href="feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+        <div>
+            <h3>Downloads</h3>
+            <p>Download the Shell Beta and install or uninstall programms</p>
+            <a href="../download_files/societylinux.sh">Download the Shell</a><br>
+            <a href="../download_files/README.md">View the Readme</a>
+        </div><br>
+        <p>Install via terminal</p>
+<div style="background-color: #111; border: 1px solid #333; padding: 15px; border-radius: 5px; font-family: monospace; display: flex; justify-content: space-between; align-items: center; max-width: 650px;">
+    
+    <span id="install-cmd" style="color: #00ff00;">curl -sSL https://raw.githubusercontent.com/fsocietyweb/societylinux/main/install.sh | bash</span>
+    
+    <button onclick="copyCommand()" id="copy-btn" style="background-color: #222; color: #00ff00; border: 1px solid #00ff00; padding: 5px 10px; cursor: pointer; font-family: monospace;">
+        COPY
+    </button>
+</div>
+
+<script>
+function copyCommand() {
+    const commandText = document.getElementById("install-cmd").innerText;
+    
+    navigator.clipboard.writeText(commandText).then(() => {
+        const btn = document.getElementById("copy-btn");
+        btn.innerText = "COPIED!";
+        btn.style.backgroundColor = "#00ff00";
+        btn.style.color = "#000";
+        
+        setTimeout(() => {
+            btn.innerText = "COPY";
+            btn.style.backgroundColor = "#222";
+            btn.style.color = "#00ff00";
+        }, 2000);
+    });
+}
+</script>
+        <br>
+
+        <p>Here are some Q&As</p>
+        <p>Here are 5 Q&As from Society Linux</p>
+        <dl class="qa-list">
+            <dt>Q: Is Society Linux Based of Debian?</dt>
+            <dd>A: No Society Linux is Based of Scratch (Linux From Scratch)</dd>
+            <br>
+            <dt>Q: Does it exist?</dt>
+            <dd>A: Yes kinda it Exist as a idea but the Literal OS not the First Beta Will be Made in Shell</dd>
+            <br>
+            <dt>Q: Why Is it Called Society Linux?</dt>
+            <dd>A: It was Named By <strong>Techx32 (Site Creator)</strong> As a FanMade idea after Watching Mr Robot</dd>
+            <br>
+            <dt>Q: Does Society Linux Support LGBTQ+?</dt>
+            <dd>A: Yes We Support it cause the Creators Are Either Pansexual, Bisexual, Gay etc</dd>
+            <br>
+            <dt>Office Q: Is 6+7 = 67?</dt>
+            <dd>A: Hahaha So Funny (BAD JOKE AHH) but no its 13</dd>
+        </dl>
+    </article>
+</main>
+</body>
+</html>

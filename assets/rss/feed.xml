@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>Society Linux Updates</title>
+  <link>https://fsocietyweb.github.io/societylinux/</link>
+  <description>Latest changelogs, SLR package drops, and development notes for Society Linux.</description>
+  <language>en-us</language>
+
+  <item>
+    <title>SLR Core Command Update</title>
+    <link>https://fsocietyweb.github.io/societylinux/docs.html#how-slr-works</link>
+    <description>Added the syntax for installing system packages using: sudo ./societylinux.sh --syspack {package_name}</description>
+    <pubDate>Wed, 01 Jul 2026 00:00:00 GMT</pubDate>
+  </item>
+
+  <item>
+    <title>Society Linux Project Launch</title>
+    <link>https://fsocietyweb.github.io/societylinux/index.html</link>
+    <description>Official announcement of the Society Linux shell environment beta and the SLR repository layout.</description>
+    <pubDate>Tue, 30 Jun 2026 00:00:00 GMT</pubDate>
+  </item>
+</channel>
+</rss>

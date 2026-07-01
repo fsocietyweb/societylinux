@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Linux - Docs</title>
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="../../index.html">Home</a>
+    <a href="download.html">Downloads</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <a href="feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+
+    <h3>Documents of Society Linux</h3>
+
+<div style="display: flex; min-height: 80vh; font-family: monospace; color: #fff;">
+    
+    <div style="width: 200px; border-right: 1px solid #333; padding-right: 20px;">
+        <h3 style="color: #00ff00;">SLR WIKI</h3>
+        <ul style="list-style: none; padding: 0; line-height: 2;">
+            <li><a href="#getting-started" style="color: #aaa; text-decoration: none;">> Getting Started</a></li>
+            <li><a href="#how-slr-works" style="color: #aaa; text-decoration: none;">> How SLR Works</a></li>
+            <li><a href="#create-package" style="color: #aaa; text-decoration: none;">> Creating Packages</a></li>
+        </ul>
+    </div>
+
+    <div style="flex: 1; padding-left: 30px;">
+        <section id="getting-started" style="margin-bottom: 40px;">
+            <h2 style="color: #00ff00;">Getting Started</h2>
+            <p>Society Linux runs as a lightweight layer. Ensure you have bash and curl installed on your host system before running the environment.</p>
+        </section>
+
+<section id="how-slr-works" style="margin-bottom: 40px; padding-left: 20px;">
+    <h2 style="color: #00ff00; font-family: monospace;">How SLR Works</h2>
+    <p style="font-family: monospace; line-height: 1.6;">
+        The Society Linux Repository downloads custom-built shell configurations and standalone tools directly into your environment. Because it interacts with system paths, executing installations requires root privileges.
+    </p>
+
+    <div style="background-color: #111; border: 1px solid #333; padding: 15px; border-radius: 5px; font-family: monospace; max-width: 700px; margin-top: 15px;">
+        <span style="color: #555;"># Install a package from the SLR database</span><br>
+        <span style="color: #00ff00;">sudo ./societylinux.sh --syspack {package_name}</span><br><br>
+        
+        <span style="color: #555;"># Remove an installed package</span><br>
+        <span style="color: #00ff00;">sudo ./societylinux.sh --uninstall {package_name}</span><br><br>
+    </div>
+</section>
+    </div>
+</div>
+</article>
+</main>
+</body>
+</html>
