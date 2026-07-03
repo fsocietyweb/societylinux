@@ -7,6 +7,13 @@
   <language>en-us</language>
 
   <item>
+    <title>Society Linux Updates</title>
+    <link>https://fsocietyweb.github.io/societylinux/assets/tabs/downloads.html</link>
+    <description>More Downloadable Media</description>
+    <pubDate>3 Jul 2026 11:28:00 GMT</pubDate>
+  </item>
+
+  <item>
     <title>SLR Core Command Update</title>
     <link>https://fsocietyweb.github.io/societylinux/docs.html#how-slr-works</link>
     <description>Added the syntax for installing system packages using: sudo ./societylinux.sh --syspack {package_name}</description>

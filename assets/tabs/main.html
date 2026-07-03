@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to Society Linux! A Webpage where you can download stuff use a Fake Linux and more i guess">
+    <title>Society Linux - Start</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="alternate" type="application/rss+xml" title="Society Linux RSS Feed" href="feed.xml">
+    <script src="assets/javascript/clock.js"></script>
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
+</head>
+<body>
+    <div id="loadingScreen">Loading</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
+
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="main.html">Home</a>
+    <a href="download.html">Downloads</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <a href="feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+        <h3>Welcome to the Webpage of Society Linux!</h3>
+        <p>You will Get Familar Soon with Society Linux we are At the moment only a Beta (Shell script) but we offically have
+            a Kind of AUR in the Shell script its Called the SLR aka the Society Linux Repository while its Very Small like less than 20 packages so very light weight only
+            a Few Kilobytes (KB) we ofc add more content later but we made progress!<br>
+            i desided to Make it a different theme
+        </p>
+
+        <p class="footer-note">I will turn it into a different Website</p>
+    </article>
+</main>
+
+</body>
+</html>

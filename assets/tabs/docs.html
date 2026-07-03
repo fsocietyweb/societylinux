@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Society Linux - Docs</title>
     <link rel="stylesheet" href="../css/base.css">
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
 </head>
 <body>
-
+<div id="loadingScreen">Loading</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
 <header>
     <div>
         <h2>Society Linux</h2>
@@ -16,7 +30,7 @@
 </header>
 
 <aside>
-    <a href="../../index.html">Home</a>
+    <a href="main.html">Home</a>
     <a href="download.html">Downloads</a>
     <a href="about.html">About</a>
     <a href="docs.html">Docs</a>

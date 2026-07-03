@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNU GRUB version 2.06</title>
+    <style>
+        /* Complete reset to eliminate all browser default margins */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        /* Dead-center flexbox container with stark terminal colors */
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Centered menu alignment box */
+        .grub-container {
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .grub-header {
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Structural menu containing the target hyper-links */
+        .grub-menu {
+            border: 2px solid #ffffff;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* High-contrast hyper-link layout formatting */
+        .grub-link {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        /* CRITICAL: Authentic GRUB highlighted inversion effect on hover */
+        .grub-link:hover {
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .grub-footer {
+            color: #888888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grub-container">
+        
+        <div class="grub-header">
+            <h2>GNU GRUB version 2.06</h2>
+            <p style="margin-top: 5px; font-size: 14px; color: #aaaaaa;">
+                Select an operating system version payload to initialize boot sequence:
+            </p>
+        </div>
+
+        <div class="grub-menu">
+            <a href="societylinuxdeb.html" class="grub-link">Debian GNU/Linux 12 (GNOME Shell Environment)</a>
+            <a href="kernelpanic.html" class="grub-link">Society Linux [Unstable]</a>
+            <a href="linuxemu.html" class="grub-link">Linux From Scratch</a>
+            <br><br>
+            <a href="../download.html" class="grub-link">Go Back</a>
+        </div>
+
+        <div class="grub-footer">
+            <p>Use your mouse pointer to select a target partition node.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

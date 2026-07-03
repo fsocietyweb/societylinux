@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux From Scratch v12.x Boot Terminal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #000000; /* Pure black like a raw TTY */
+            color: #ffffff; /* Classic white text */
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            padding: 15px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .terminal {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* SysVinit style boot notifications */
+        .init-line {
+            margin-bottom: 4px;
+        }
+
+        .status-ok {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .status-info {
+            color: #00ffff;
+        }
+
+        .kernel-msg {
+            color: #b0b0b0;
+        }
+
+        /* CLI Input Styling */
+        .prompt-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .prompt-label {
+            color: #00ff00; /* root green */
+            font-weight: bold;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 15px;
+            width: 100%;
+            outline: none;
+            caret-color: #ffffff;
+        }
+
+        .history-line {
+            margin-bottom: 6px;
+        }
+
+        .output {
+            color: #cccccc;
+            margin: 4px 0 12px 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="terminal" onclick="document.getElementById('command-input').focus()">
+    
+    <div class="boot-logs">
+        <div class="kernel-msg">[    0.000000] Linux version 6.12.1-lfs-12.2 (root@lfs-host) (gcc version 14.2.0)</div>
+        <div class="kernel-msg">[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.1-lfs-12.2 root=/dev/sda2 ro</div>
+        <div class="kernel-msg">[    0.105432] x86/CPU: Intel(R) Core(TM) i7 Virtual CPU @ 2.60GHz</div>
+        <div class="kernel-msg">[    1.432910] ext4-fs (sda2): mounted filesystem with ordered data mode. Opts: (null).</div>
+        <div class="kernel-msg">[    2.102394] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input3</div>
+        
+        <div class="init-line">Initiating rcsysinit...</div>
+        <div class="init-line">Bringing up the loopback interface...               [ <span class="status-ok">OK</span> ]</div>
+        <div class="init-line">Mounting remaining file systems...                   [ <span class="status-ok">OK</span> ]</div>
+        <div class="init-line">Mounting virtual kernel file systems...             [ <span class="status-ok">OK</span> ]</div>
+        <div class="init-line">Activating all swap files and devices...             [ <span class="status-ok">OK</span> ]</div>
+        <div class="init-line">Setting up hostname lfs-box...                       [ <span class="status-ok">OK</span> ]</div>
+        <div class="init-line">Starting system log daemon...                        [ <span class="status-ok">OK</span> ]</div>
+        
+        <div class="init-line" style="margin-top: 15px;">
+            Linux From Scratch (lfs-box) (tty1)<br><br>
+            lfs-box login: root (automatic login)<br>
+            Last login: Fri Jul  3 16:40:22 on tty1
+        </div>
+    </div>
+
+    <div id="terminal-history"></div>
+
+    <div class="prompt-container">
+        <div class="prompt-label">root [ ~ ]#</div>
+        <div class="input-wrapper">
+            <input type="text" id="command-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('command-input');
+    const history = document.getElementById('terminal-history');
+
+    // LFS environment mock data
+    const commands = {
+        'help': 'LFS Sandbox Minimalist Shell.\nAvailable Builtins/Simulations:\n  help     - Show this screen\n  uname -a - Print system architecture details\n  ls /     - List root directory layout\n  cat /etc/lfs-release - Check the LFS version\n  clear    - Clear terminal screen',
+        'uname -a': 'Linux lfs-box 6.12.1-lfs-12.2 #1 SMP PREEMPT_DYNAMIC Fri Jul 3 12:00:00 CEST 2026 x86_64 GNU/Linux',
+        'ls /': 'bin/   dev/  home/  lib64/       mnt/  proc/  run/   srv/  tmp/  var/\nboot/  etc/  lib/   lost+found/  opt/  root/  sbin/  sys/  usr/',
+        'cat /etc/lfs-release': 'Linux From Scratch - Version 12.2\nBuilt compiled entirely from source code.',
+        'ls': 'bin/   dev/  home/  lib64/       mnt/  proc/  run/   srv/  tmp/  var/\nboot/  etc/  lib/   lost+found/  opt/  root/  sbin/  sys/  usr/'
+    };
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const commandValue = input.value.trim();
+            
+            if (commandValue === '') return;
+
+            // Handle 'clear' command directly
+            if (commandValue.toLowerCase() === 'clear') {
+                history.innerHTML = '';
+                input.value = '';
+                return;
+            }
+
+            // Append command to history component
+            const historyLine = document.createElement('div');
+            historyLine.className = 'history-line';
+            historyLine.innerHTML = `<span style="color: #00ff00; font-weight: bold;">root [ ~ ]#</span> <span style="color: #fff;">${commandValue}</span>`;
+            history.appendChild(historyLine);
+
+            // Append output component
+            const outputLine = document.createElement('div');
+            outputLine.className = 'output';
+            
+            if (commands[commandValue]) {
+                outputLine.innerText = commands[commandValue];
+            } else {
+                outputLine.innerText = `-bash: ${commandValue}: command not found (Remember: no package manager exists here!)`;
+            }
+
+            history.appendChild(outputLine);
+            
+            // Clean slate input and snap view to bottom
+            input.value = '';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+</script>
+
+</body>
+</html>

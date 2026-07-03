@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Society Linux - About</title>
     <link rel="stylesheet" href="../css/base.css">
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
     <style>
         a {
             color: white;
@@ -17,6 +25,13 @@
     </style>
 </head>
 <body>
+  <div id="loadingScreen">Loading</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
 <header>
     <div>
         <h2>Society Linux</h2>
@@ -25,7 +40,7 @@
 </header>
 
 <aside>
-    <a href="../../index.html">Home</a>
+    <a href="main.html">Home</a>
     <a href="download.html">Downloads</a>
     <a href="about.html">About</a>
     <a href="docs.html">Docs</a>
@@ -36,6 +51,59 @@
     <article>
         <h3>About</h3>
         <p>Me Techx32 Made this Site and Project cause of Fun and cause i want to Visit my <a href="https://github.com/fsocietyweb">Github</a> For More Stuff i made</p>
+
+
+<div id="aero-ring" class="aero-ring-js">
+  <script src="https://frutigeraeroarchive.org/javascript/aero-webring.min.js"></script>
+</div>
+
+<noscript>
+  <style>
+  /* Hide JavaScript Widget */
+  .aero-ring-js {
+    display: none !important;
+  }
+  </style>
+  
+  <!-- No JS Widget -->
+  <div id="aero-ring">
+    <div style="display: flex; flex-direction: column; align-items: center; font-size: 1rem;">
+      <a href="https://frutigeraeroarchive.org/aero_webring" target="_top">aero & Y2K webring</a>
+      <div style="display: flex; gap: 1rem; font-size: 1.5rem">
+        <a href="https://frutigeraeroarchive.org/aero_webring#members" target="_top">No JavaScript</a>
+      </div>
+      <div style="display: flex; gap: 0.5rem; font-size: 1rem">
+        <a href="https://frutigeraeroarchive.org/aero_webring#members" target="_top">view memberlist</a>
+      </div>
+    </div>
+  </div>
+</noscript>
+
+<!-- CSS below is optional -->
+<style>
+  #aero-ring {
+    background: linear-gradient(to bottom, #404040 0%, #000000 100%);
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 
+    inset 0 2px 1px rgba(255, 255, 255, 0.15), 
+    inset 0 -2px 1px rgba(0, 0, 0, 0.35);
+    font-family: sans-serif;
+    margin: 10px auto 0px auto;
+    max-width: 15rem;
+    padding: 0.75rem;
+  }
+
+  #aero-ring a,
+  #aero-ring a:visited {
+    color: white !important;
+  }
+
+  #aero-ring a:focus,
+  #aero-ring a:hover,
+  #aero-ring a:active {
+    color: lightgrey !important;
+  }
+</style>
     </article>
 </main>
 </body>

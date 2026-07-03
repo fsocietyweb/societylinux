@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Society Linux - Downloads</title>
     <link rel="stylesheet" href="../css/base.css">
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
     <style>
         a {
             color: white;
@@ -17,6 +25,13 @@
     </style>
 </head>
 <body>
+    <div id="loadingScreen">Loading</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
 <header>
     <div>
         <h2>Society Linux</h2>
@@ -25,7 +40,7 @@
 </header>
 
 <aside>
-    <a href="../../index.html">Home</a>
+    <a href="main.html">Home</a>
     <a href="download.html">Downloads</a>
     <a href="about.html">About</a>
     <a href="docs.html">Docs</a>
@@ -36,39 +51,19 @@
     <article>
         <div>
             <h3>Downloads</h3>
-            <p>Download the Shell Beta and install or uninstall programms</p>
+            <p>Download the Shell Beta and install or uninstall programms or download the Vindertech TUI Messenger</p>
             <a href="../download_files/societylinux.sh">Download the Shell</a><br>
-            <a href="../download_files/README.md">View the Readme</a>
-        </div><br>
-<!--      <p>Install via terminal</p>
-<div style="background-color: #111; border: 1px solid #333; padding: 15px; border-radius: 5px; font-family: monospace; display: flex; justify-content: space-between; align-items: center; max-width: 650px;">
-    
-    <span id="install-cmd" style="color: #00ff00;">curl -sSL https://github.com/fsocietyweb/societylinux/raw/refs/heads/main/assets/download_files/societylinux.sh | bash</span>
-    
-    <button onclick="copyCommand()" id="copy-btn" style="background-color: #222; color: #00ff00; border: 1px solid #00ff00; padding: 5px 10px; cursor: pointer; font-family: monospace;">
-        COPY
-    </button>
-</div>
+            <a href="../download_files/README.md">View the Readme</a><br><br>
+            <a href="../download_files/vindertech_network.cpp">Vindertech Network C++</a><br>
+            <a href="../download_files/vindertech_network.py">Vindertech Network Python</a>
 
-<script>
-function copyCommand() {
-    const commandText = document.getElementById("install-cmd").innerText;
-    
-    navigator.clipboard.writeText(commandText).then(() => {
-        const btn = document.getElementById("copy-btn");
-        btn.innerText = "COPIED!";
-        btn.style.backgroundColor = "#00ff00";
-        btn.style.color = "#000";
-        
-        setTimeout(() => {
-            btn.innerText = "COPY";
-            btn.style.backgroundColor = "#222";
-            btn.style.color = "#00ff00";
-        }, 2000);
-    });
-}
-</script>-->
-        <br>
+            <br>
+            <h3>Web Emulation</h3>
+            <p>Test A Web emulation of LFS or Society LFS</p>
+            <a href="emu/grub.html">Enter GRUB MENU</a>
+        </div><br>
+
+        <h3>Q&As</h3>
 
         <p>Here are some Q&As</p>
         <p>Here are 5 Q&As from Society Linux</p>
@@ -85,8 +80,11 @@ function copyCommand() {
             <dt>Q: Does Society Linux Support LGBTQ+?</dt>
             <dd>A: Yes We Support it cause the Creators Are Either Pansexual, Bisexual, Gay etc</dd>
             <br>
-            <dt>Office Q: Is 6+7 = 67?</dt>
+            <dt>Q: Is 6+7 = 67?</dt>
             <dd>A: Hahaha So Funny (BAD JOKE AHH) but no its 13</dd>
+            <br>
+            <dt>Q: Where got this Site Created</dt>
+            <dd>A: Germany, NRW</dd>
         </dl>
     </article>
 </main>
