@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Linux Enterprise (SDE Plasma-Edition)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050508;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            transition: background 0.4s ease;
+        }
+
+        /* ================= SETUP OPTIONEN INTERFACE ================= */
+        #setup-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0f111a 0%, #020306 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+        }
+
+        .setup-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 12px;
+            padding: 35px;
+            width: 500px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+
+        .setup-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 18px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .setup-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: translateY(-1px);
+        }
+
+        /* ================= DE SYSTEM THEMES & DESKTOP SURFACE ================= */
+        #os-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+        
+        .desktop { position: absolute; top: 38px; left: 0; right: 0; bottom: 0; padding: 25px; display: flex; flex-direction: column; gap: 20px; align-content: flex-start; flex-wrap: wrap; }
+
+        .theme-sde { background-color: #008080; }
+        .theme-sde .desktop { font-family: "MS Sans Serif", sans-serif; }
+        
+        /* 1:1 KDE Plasma Style: Wallpaper + Taskbar unten */
+        .theme-kde { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920') center/cover no-repeat; }
+        .theme-kde .desktop { top: 0; bottom: 45px; font-family: 'Noto Sans', sans-serif; }
+        
+        .theme-xfce { background: #3b4252; }
+        .theme-cosmic { background: #1a102f; }
+        .theme-lxqt { background: #232629; }
+        .theme-none { background: #000000 !important; }
+
+        /* ================= SYSTEM CONTROL PANELS ================= */
+        .panel-top {
+            position: absolute; top: 0; left: 0; right: 0; height: 38px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 10px; z-index: 10000; box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Panel Varianten */
+        .theme-sde .panel-top { background: #d4d0c8; border-bottom: 2px solid #ffffff; }
+        .theme-xfce .panel-top { background: #2e3440; border-bottom: 1px solid #4c566a; }
+        .theme-cosmic .panel-top { background: #0f091d; border-bottom: 2px solid #a855f7; }
+        .theme-lxqt .panel-top { background: #31363b; border-bottom: 1px solid #3daee9; }
+        .theme-none .panel-top { display: none !important; }
+
+        /* 1:1 KDE Plasma Panel (UNTEN positioniert, Milchglas-Optik) */
+        .theme-kde .panel-top {
+            top: auto; bottom: 0; height: 45px;
+            background: rgba(35, 38, 41, 0.85);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
+        }
+
+        /* Start-Knopf-Styling */
+        .start-button { font-weight: bold; padding: 4px 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .theme-sde .start-button { background: #d4d0c8; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 2px solid #404040; border-bottom: 2px solid #404040; }
+        .theme-xfce .start-button { background: #434c5e; color: #d8dee9; border: none; border-radius: 2px; }
+        .theme-cosmic .start-button { background: #a855f7; color: #fff; border: none; border-radius: 6px; }
+        .theme-lxqt .start-button { background: #2a2e32; color: #fcfaee; border: 1px solid #454a4f; }
+        
+        /* 1:1 KDE Application Launcher Icon */
+        .theme-kde .start-button { background: transparent; color: #3daee9; border: none; font-size: 22px; padding: 0 15px; height: 100%; transition: background 0.2s; }
+        .theme-kde .start-button:hover { background: rgba(255,255,255,0.1); }
+
+        .system-tray { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+        .theme-sde .system-tray { color: #000; }
+        .theme-kde .system-tray { color: #eff0f1; }
+        .theme-xfce .system-tray { color: #d8dee9; }
+        .theme-cosmic .system-tray { color: #d8b4fe; }
+        .theme-lxqt .system-tray { color: #3daee9; }
+
+        /* ================= POPUP MENÜS ================= */
+        .start-menu { position: absolute; top: 38px; left: 10px; width: 250px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 99999; padding: 5px; }
+        .theme-sde .start-menu { background: #d4d0c8; border: 2px solid #fff; }
+        .theme-xfce .start-menu { background: #2e3440; border: 1px solid #4c566a; }
+        .theme-cosmic .start-menu { background: #150b24; border: 1px solid #a855f7; border-radius: 8px; }
+        .theme-lxqt .start-menu { background: #232629; border: 1px solid #454a4f; }
+
+        /* 1:1 KDE Kickoff Menu (Öffnet nach oben über der Taskleiste) */
+        .theme-kde .start-menu {
+            top: auto; bottom: 50px; left: 5px;
+            width: 420px; height: 450px;
+            background: rgba(35, 38, 41, 0.95);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+            padding: 15px;
+            display: none;
+        }
+
+        .start-menu-title { padding: 6px; text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 5px; color: #fff; }
+        .theme-sde .start-menu-title { background: #808080; }
+        .theme-xfce .start-menu-title { background: #434c5e; }
+        .theme-cosmic .start-menu-title { background: #6b21a8; }
+        .theme-lxqt .start-menu-title { background: #31363b; color: #3daee9; }
+        
+        /* 1:1 KDE Kickoff Header */
+        .theme-kde .start-menu-title { background: rgba(255,255,255,0.05); text-align: left; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px; }
+
+        .start-menu-item { padding: 9px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; color: inherit; border-radius: 4px; }
+        .theme-sde .start-menu-item { color: #000; border-radius: 0; }
+        .theme-sde .start-menu-item:hover { background: #000080; color: #fff; }
+        .theme-xfce .start-menu-item:hover { background: #434c5e; }
+        .theme-cosmic .start-menu-item:hover { background: rgba(168, 85, 247, 0.2); }
+        .theme-lxqt .start-menu-item:hover { background: #31363b; color: #3daee9; }
+        
+        /* 1:1 KDE Menu Items */
+        .theme-kde .start-menu-item { color: #eff0f1; margin: 2px 0; }
+        .theme-kde .start-menu-item:hover { background: rgba(61, 174, 233, 0.2); border-left: 3px solid #3daee9; }
+
+        /* ================= DESKTOP ICONS ================= */
+        .theme-none .desktop { top: 0 !important; height: 100% !important; padding: 0 !important; } 
+        .theme-none .desk-icon { display: none !important; }
+
+        .desk-icon { width: 80px; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; padding: 6px; border-radius: 6px; }
+        .desk-icon:hover { background: rgba(255, 255, 255, 0.1); }
+        .icon-img { font-size: 34px; margin-bottom: 4px; }
+        .icon-label { font-size: 11px; font-weight: 500; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); color: #fff; }
+
+        /* ================= DESKTOP WINDOW FRAME STYLES ================= */
+        .window { position: absolute; width: 680px; height: 480px; display: flex; flex-direction: column; z-index: 100; box-shadow: 0 12px 35px rgba(0,0,0,0.5); }
+        
+        /* TTY / Kein Desktop Fullscreen Modus */
+        .theme-none .window { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border: none !important; box-shadow: none !important; }
+        .theme-none .window-header { display: none !important; }
+        .theme-none .window-body { border: none !important; padding: 20px !important; height: 100% !important; }
+
+        /* SDE Fenster */
+        .theme-sde .window { background: #d4d0c8; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #404040; border-bottom: 2px solid #404040; padding: 2px; }
+        .theme-sde .window-header { background: linear-gradient(90deg, #000080, #1084d0); color: #fff; padding: 4px 6px; display: flex; justify-content: space-between; font-weight: bold; cursor: move; }
+        .theme-sde .window-body { background: #fff; color: #000; margin: 2px; border-top: 2px solid #404040; border-left: 2px solid #404040; padding: 10px; flex-grow: 1; overflow: auto; }
+        .theme-sde .close-btn { background: #d4d0c8; border-top: 1px solid #fff; border-left: 1px solid #fff; width: 18px; height: 16px; cursor: pointer; }
+
+        /* 1:1 KDE Plasma Breeze Window Design */
+        .theme-kde .window { background: #31363b; border: 1px solid #4d5257; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .theme-kde .window-header { background: #232629; color: #eff0f1; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; cursor: move; border-bottom: 1px solid #31363b; }
+        .theme-kde .window-body { background: #232629; color: #eff0f1; padding: 14px; flex-grow: 1; overflow: auto; }
+        .theme-kde .window-controls { display: flex; gap: 8px; align-items: center; }
+        .theme-kde .win-ctrl-btn { width: 16px; height: 16px; border-radius: 50%; border: none; cursor: pointer; font-size: 9px; display: flex; align-items: center; justify-content: center; background: #4d5257; color: #eff0f1; }
+        .theme-kde .close-btn { background: #da4453; color: white; }
+
+        /* XFCE Fenster */
+        .theme-xfce .window { background: #2e3440; border: 1px solid #4c566a; border-radius: 3px; overflow: hidden; }
+        .theme-xfce .window-header { background: #3b4252; color: #d8dee9; padding: 6px 12px; display: flex; justify-content: space-between; cursor: move; }
+        .theme-xfce .window-body { background: #2e3440; color: #e5e9f0; padding: 10px; flex-grow: 1; overflow: auto; }
+        .theme-xfce .close-btn { background: #4c566a; color: #d8dee9; border: none; padding: 2px 6px; cursor: pointer; }
+
+        /* COSMIC Fenster */
+        .theme-cosmic .window { background: #261941; border: 1px solid #4c3085; border-radius: 10px; overflow: hidden; }
+        .theme-cosmic .window-header { background: #150b24; color: #fff; padding: 12px; display: flex; justify-content: space-between; cursor: move; }
+        .theme-cosmic .window-body { background: #201438; color: #f3eefc; padding: 14px; flex-grow: 1; overflow: auto; }
+        .theme-cosmic .close-btn { background: rgba(255,255,255,0.06); color: #ef4444; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px; cursor: pointer; }
+
+        /* LXQt Fenster */
+        .theme-lxqt .window { background: #2a2e32; border: 1px solid #454a4f; border-radius: 5px; overflow: hidden; }
+        .theme-lxqt .window-header { background: #31363b; color: #eff0f1; padding: 8px 12px; display: flex; justify-content: space-between; cursor: move; }
+        .theme-lxqt .window-body { background: #232629; color: #eff0f1; padding: 12px; flex-grow: 1; overflow: auto; }
+        .theme-lxqt .close-btn { background: #31363b; color: #bdc3c7; border: 1px solid #454a4f; border-radius: 2px; padding: 1px 5px; cursor: pointer; }
+
+        /* ================= TERMINAL TEXT STYLING ================= */
+        .terminal-box { background: #111213 !important; color: #22c55e !important; font-family: 'Courier New', monospace; font-size: 14px; }
+        .theme-none .terminal-box { color: #ffffff !important; background: #000000 !important; }
+        .theme-kde .terminal-box { background: #1b1e20 !important; color: #f1f5f9 !important; } /* Konsole 1:1 */
+        .terminal-log { white-space: pre-wrap; line-height: 1.4; }
+        .prompt-line { display: flex; margin-top: 5px; }
+        .prompt-text { color: #38bdf8; margin-right: 8px; font-weight: bold; }
+        .theme-none .prompt-text { color: #aeafad; }
+        .cmd-input { background: transparent; border: none; color: #ffffff; font-family: inherit; font-size: 14px; flex-grow: 1; outline: none; }
+    </style>
+</head>
+<body class="theme-xfce">
+    <div id="os-screen">
+        
+        <div class="panel-top">
+            <button class="start-button" id="start-btn" onclick="toggleStartMenu(event)">
+                <span id="start-logo">🏁</span> <span id="start-text">Start</span>
+            </button>
+            <div class="system-tray">
+                <span id="user-indicator" style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size:11px;">u:user</span>
+                <span id="de-indicator" style="font-weight: 600;">DE: Init</span>
+                <span id="clock">00:00</span>
+            </div>
+        </div>
+
+        <div class="start-menu" id="start-menu-popup">
+            <div class="start-menu-title" id="menu-branding">SOCIETY LINUX MANAGER</div>
+            <div class="start-menu-item" onclick="launchApp('terminal')">📟 System Terminal Console (Konsole)</div>
+            <div class="start-menu-item" onclick="launchApp('explorer')">📁 Storage File Tree</div>
+            <div class="start-menu-item" onclick="launchApp('browser')">🦊 SocietyFox Webnode</div>
+            <div class="start-menu-hr" style="height: 1px; background: rgba(255,255,255,0.1); margin: 5px 0;"></div>
+            <div class="start-menu-item" onclick="factoryResetOS()">🔄 DE-Setup zurücksetzen</div>
+        </div>
+
+        <div class="desktop" id="desktop-surface">
+            <div class="desk-icon" onclick="launchApp('terminal')">
+                <div class="icon-img">📟</div>
+                <div class="icon-label">Terminal</div>
+            </div>
+            <div class="desk-icon" onclick="launchApp('explorer')">
+                <div class="icon-img">📁</div>
+                <div class="icon-label">Dateien</div>
+            </div>
+            <div class="desk-icon" onclick="launchApp('browser')">
+                <div class="icon-img">🦊</div>
+                <div class="icon-label">Browser</div>
+            </div>
+        </div>
+
+        <div id="window-layer"></div>
+
+    </div>
+
+    <script>
+        let topZIndex = 1000;
+        let currentDE = 'sde';
+        let currentUser = 'web_user';
+        let registeredUsers = ['root']; // Dynamische Userdaten-Datenbank
+
+        window.onload = function() {
+            const savedDE = localStorage.getItem('sde_permanent_de_v4');
+            if (savedDE) {
+                currentDE = savedDE;
+                document.getElementById('setup-screen').style.display = 'none';
+                showLoginManager();
+            }
+        };
+
+        function selectArchitecture(deName) {
+            currentDE = deName;
+            localStorage.setItem('sde_permanent_de_v4', deName);
+            document.getElementById('setup-screen').style.display = 'none';
+            showLoginManager();
+        }
+
+        function initializeDE(deName) {
+            document.body.className = `theme-${deName}`;
+            document.getElementById('os-screen').style.display = 'block';
+            document.getElementById('window-layer').innerHTML = '';
+
+            const indicator = document.getElementById('de-indicator');
+            const userIndicator = document.getElementById('user-indicator');
+            const startLogo = document.getElementById('start-logo');
+            const startText = document.getElementById('start-text');
+            const branding = document.getElementById('menu-branding');
+
+            userIndicator.textContent = `u:${currentUser}`;
+
+            if (deName === 'sde') {
+                indicator.textContent = "DE: SDE Classic"; startLogo.textContent = "🏁"; startText.textContent = "Start"; branding.textContent = "SOCIETY LINUX OS";
+            } else if (deName === 'kde') {
+                indicator.textContent = "KDE Plasma 6"; startLogo.textContent = "❄️"; startText.textContent = "K-Menu"; branding.textContent = "KDE KICKOFF LAUNCHER";
+            } else if (deName === 'xfce') {
+                indicator.textContent = "DE: XFCE4"; startLogo.textContent = "🐭"; startText.textContent = "Apps"; branding.textContent = "XFCE WHISKER MENU";
+            } else if (deName === 'cosmic') {
+                indicator.textContent = "DE: COSMIC"; startLogo.textContent = "🚀"; startText.textContent = "App List"; branding.textContent = "COSMIC RUST DASH";
+            } else if (deName === 'lxqt') {
+                indicator.textContent = "DE: LXQt"; startLogo.textContent = "⚙️"; startText.textContent = "Apps"; branding.textContent = "LXQT PANEL";
+            } else if (deName === 'none') {
+                launchApp('terminal');
+            }
+        }
+
+        function factoryResetOS() {
+            localStorage.removeItem('sde_permanent_de_v4');
+            location.reload();
+        }
+
+        function toggleStartMenu(e) {
+            e.stopPropagation();
+            const m = document.getElementById('start-menu-popup');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        document.onclick = function() {
+            document.getElementById('start-menu-popup').style.display = 'none';
+        };
+
+        function bringToFront(win) {
+            if(currentDE === 'none') return;
+            win.style.zIndex = ++topZIndex;
+        }
+
+        // ================= APPLICATION WINDOW DEPLOYMENT =================
+        function launchApp(appId) {
+            if(document.getElementById(`win-${appId}`)) {
+                bringToFront(document.getElementById(`win-${appId}`));
+                return;
+            }
+
+            const win = document.createElement('div');
+            win.id = `win-${appId}`;
+            win.className = 'window';
+            win.style.left = `${120 + (document.querySelectorAll('.window').length * 25)}px`;
+            win.style.top = `${100 + (document.querySelectorAll('.window').length * 25)}px`;
+
+            let title = appId.toUpperCase();
+            let body = '';
+
+            if (appId === 'terminal') {
+                title = currentDE === 'kde' ? "Konsole" : "Terminal Console Core";
+                let introductoryText = `Society Linux Kernel Subshell Engine v6.1\nAngemeldeter Account: [ ${currentUser} ]\nNutze 'sudo useradd [name]' oder 'su [user]' zur Accountsteuerung.\n\n`;
+
+                body = `
+                    <div class="window-body terminal-box" onclick="this.querySelector('input').focus()">
+                        <div class="terminal-log">${introductoryText}</div>
+                        <div class="prompt-line"><span class="prompt-text">${currentUser}@society:~#</span><input type="text" class="cmd-input" autocomplete="off" spellcheck="false" autofocus></div>
+                    </div>
+                `;
+            } else if (appId === 'explorer') {
+                title = currentDE === 'kde' ? "Dolphin" : "File System Explorer";
+                body = `
+                    <div class="window-body">
+                        <p style="padding: 4px;">📁 root</p>
+                        <p style="padding: 4px; margin-left:15px;">📁 home</p>
+                        <p style="padding: 4px; margin-left:30px;">📁 ${currentUser}</p>
+                        <p style="padding: 4px; margin-left:45px;">📄 user_profile.dat</p>
+                    </div>
+                `;
+            } else if (appId === 'browser') {
+                title = currentDE === 'kde' ? "Angelfish Browser" : "SocietyFox Webnode";
+                body = `
+                    <div class="window-body" style="background:#fff; color:#000; padding:20px;">
+                        <h3>SDE Secure Loop Tunnel</h3>
+                        <p style="margin-top:10px; color:#555;">Konto-Berechtigung verifiziert für Terminal-Session.</p>
+                    </div>
+                `;
+            }
+
+            // Header Generierung je nach Desktop Environment (Breeze-KDE nutzt Steuerkreise)
+            if (currentDE === 'kde') {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <span>${title}</span>
+                        <div class="window-controls">
+                            <button class="win-ctrl-btn">-</button>
+                            <button class="win-ctrl-btn">□</button>
+                            <button class="win-ctrl-btn close-btn" onclick="document.getElementById('win-${appId}').remove()">✕</button>
+                        </div>
+                    </div>
+                    ${body}
+                `;
+            } else {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <span>${title}</span>
+                        <button class="close-btn" onclick="document.getElementById('win-${appId}').remove()">✕</button>
+                    </div>
+                    ${body}
+                `;
+            }
+
+            win.addEventListener('mousedown', () => bringToFront(win));
+            document.getElementById('window-layer').appendChild(win);
+            
+            if(currentDE !== 'none') {
+                makeWindowDraggable(win);
+            }
+
+            if(appId === 'terminal') setupTerminalControl(win);
+        }
+
+        // ================= CORE MULTIUSER & REPLACE TERMINAL ENGINE =================
+        function setupTerminalControl(win) {
+            const input = win.querySelector('.cmd-input');
+            const log = win.querySelector('.terminal-log');
+            const ptext = win.querySelector('.prompt-text');
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const cmdStr = input.value.trim();
+                    input.value = '';
+                    if (!cmdStr) return;
+
+                    log.textContent += `${currentUser}@society:~# ${cmdStr}\n`;
+
+                    // ================= USERADD BEFEHL =================
+                    if (cmdStr.startsWith('sudo useradd ')) {
+                        const newName = cmdStr.split(' ')[2];
+                        if (newName && newName.length > 1) {
+                            if (!registeredUsers.includes(newName)) {
+                                registeredUsers.push(newName);
+                                log.textContent += `[+] Generiere Home-Verzeichnis /home/${newName}...\n`;
+                                log.textContent += `[✔] Benutzer '${newName}' erfolgreich im Shadow-Mapping registriert.\n\n`;
+                            } else {
+                                log.textContent += `[-] Fehler: Benutzer '${newName}' existiert bereits.\n\n`;
+                            }
+                        } else {
+                            log.textContent += "Syntax: sudo useradd [username]\n\n";
+                        }
+                        return;
+                    }
+
+                    // ================= SU (SWITCH USER) BEFEHL =================
+                    if (cmdStr.startsWith('su ')) {
+                        const targetUser = cmdStr.split(' ')[1];
+                        if (targetUser) {
+                            if (registeredUsers.includes(targetUser)) {
+                                currentUser = targetUser;
+                                ptext.textContent = `${currentUser}@society:~#`;
+                                document.getElementById('user-indicator').textContent = `u:${currentUser}`;
+                                log.textContent += `[+] Zu Account '${currentUser}' gewechselt.\n\n`;
+                            } else {
+                                log.textContent += `[-] Fehler: Account '${targetUser}' nicht im System gefunden.\n\n`;
+                            }
+                        }
+                        return;
+                    }
+
+                    // ================= HARDWARE REPLACE ENGINE =================
+                    if (cmdStr.startsWith('sudo replace --desktop ')) {
+                        const tokens = cmdStr.split(' ');
+                        const toIndex = tokens.indexOf('--to');
+                        if (toIndex !== -1 && tokens[toIndex + 1]) {
+                            const targetDE = tokens[toIndex + 1].toLowerCase();
+                            const supported = ['sde', 'kde', 'xfce', 'cosmic', 'lxqt', 'none'];
+                            
+                            if (supported.includes(targetDE)) {
+                                log.textContent += `[*] Entkopple Display Server Core...\n`;
+                                log.textContent += `[+] Lade Grafik-Treiberstack für ${targetDE.toUpperCase()} Shell...\n`;
+                                log.textContent += `[✔] System-Wechsel eingeleitet...\n`;
+                                
+                                setTimeout(() => {
+                                    initializeDE(targetDE);
+                                }, 1000);
+                                return;
+                            }
+                        }
+                        log.textContent += "Fehler! Richtige Syntax: sudo replace --desktop [aktuell] --to [sde|kde|xfce|cosmic|lxqt|none]\n\n";
+                        return;
+                    }
+
+                    if (cmdStr === 'clear') { log.textContent = ''; return; }
+                    if (cmdStr === 'help') { log.textContent += "Verfügbare Befehle:\n  help         - Befehlsübersicht\n  clear        - Terminal leeren\n  neofetch     - Systemdaten abrufen\n  sudo useradd - Neuen Benutzeraccount anlegen\n  su [user]    - Zu anderem Account wechseln\n  sudo replace - Desktop permanent wechseln\n\n"; return; }
+                    if (cmdStr === 'neofetch') {
+                        log.textContent += `  ❄️ Plasma    OS: Society Linux SDE Ultimate\n   🔘 Core     Active Environment: ${currentDE.toUpperCase()} Build\n   👥 User     Current Shell Identity: ${currentUser}\n              System-State: Persistent Locked\n\n`;
+                        return;
+                    }
+
+                    log.textContent += `bash: ${cmdStr}: Befehl oder Dienst im Stack nicht initialisiert.\n\n`;
+                }
+            });
+        }
+
+        // ================= WINDOW MOVE SYSTEM =================
+        function makeWindowDraggable(win) {
+            const header = win.querySelector('.window-header');
+            let isDragging = false, startX, startY, initX, initY;
+
+            header.onmousedown = function(e) {
+                if(e.target.tagName === 'BUTTON') return;
+                isDragging = true;
+                bringToFront(win);
+                startX = e.clientX; startY = e.clientY;
+                initX = parseInt(win.style.left, 10) || 0;
+                initY = parseInt(win.style.top, 10) || 0;
+
+                document.onmousemove = function(e) {
+                    if (!isDragging) return;
+                    win.style.left = `${initX + (e.clientX - startX)}px`;
+                    win.style.top = `${initY + (e.clientY - startY)}px`;
+                };
+
+                document.onmouseup = function() {
+                    isDragging = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+        }
+
+        // Live Clock Synchronization
+        function syncClock() {
+            if(currentDE === 'none') return;
+            const d = new Date();
+            document.getElementById('clock').textContent = d.toTimeString().split(' ')[0].substring(0, 5);
+        }
+        setInterval(syncClock, 1000);
+        syncClock();
+    </script>
+</body>
+</html>

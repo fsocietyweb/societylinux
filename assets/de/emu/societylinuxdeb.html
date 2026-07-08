@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debian GNU/Linux (GNOME Shell Simulation)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: #2e3440;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            height: 100vh;
+            overflow: hidden;
+            color: #eeeeee;
+        }
+
+        .gnome-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .top-bar-item {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .top-bar-item:hover, .top-bar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .top-bar-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .desktop-canvas {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .activities-overlay {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 30, 36, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 40px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 110px);
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .grid-icon:hover {
+            transform: scale(1.08);
+        }
+
+        .grid-graphic {
+            width: 60px;
+            height: 60px;
+            background: #313244;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 8px;
+        }
+
+        .grid-label {
+            font-size: 13px;
+            text-align: center;
+            color: #cdd6f4;
+        }
+
+        .window {
+            position: absolute;
+            width: 680px;
+            height: 460px;
+            background: #1e1e2e;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: #252538;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .window-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #a6adc8;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .window-controls .close-btn {
+            background: #f38ba8;
+            border: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .window-controls .close-btn:hover {
+            opacity: 0.8;
+        }
+
+        .window-body {
+            padding: 12px;
+            flex-grow: 1;
+            overflow: auto;
+            background: #1e1e2e;
+            position: relative;
+        }
+
+        .terminal-box {
+            background: #171722 !important;
+            color: #cdd6f4 !important;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 14px;
+        }
+
+        .terminal-log {
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        .prompt-line {
+            display: flex;
+            margin-top: 6px;
+        }
+
+        .prompt-text {
+            color: #a6e3a1;
+            margin-right: 6px;
+            font-weight: bold;
+        }
+
+        .cmd-input {
+            background: transparent;
+            border: none;
+            color: #cdd6f4;
+            font-family: inherit;
+            font-size: 14px;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .editor-textarea {
+            flex-grow: 1;
+            background: #181825;
+            color: #cdd6f4;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .editor-save-btn {
+            background: #89b4fa;
+            color: #11111b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        .explorer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 85px);
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .exp-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+
+        .exp-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .exp-icon {
+            font-size: 36px;
+            margin-bottom: 6px;
+        }
+
+        .exp-label {
+            font-size: 12px;
+            color: #cdd6f4;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gnome-top-bar">
+        <div class="top-bar-item" id="activities-toggle" onclick="toggleActivities(event)">Activities</div>
+        <div class="top-bar-item top-bar-center" id="live-clock">Jul 3 17:00</div>
+        <div class="top-bar-item">⏻ 📶</div>
+    </div>
+
+    <div class="desktop-canvas" id="desktop-canvas-view"></div>
+
+    <div class="activities-overlay" id="activities-menu" onclick="closeActivities()">
+        <div class="app-grid" onclick="event.stopPropagation()">
+            <div class="grid-icon" onclick="launchApp('terminal')">
+                <div class="grid-graphic">📟</div>
+                <div class="grid-label">Terminal</div>
+            </div>
+            <div class="grid-icon" onclick="launchApp('explorer')">
+                <div class="grid-graphic">📁</div>
+                <div class="grid-label">Files</div>
+            </div>
+            <div class="grid-icon" onclick="launchApp('firefox')">
+                <div class="grid-graphic">🦊</div>
+                <div class="grid-label">Firefox</div>
+            </div>
+            <div class="grid-icon" onclick="launchApp('info')">
+                <div class="grid-graphic">ℹ️</div>
+                <div class="grid-label">Settings</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="window-container"></div>
+
+    <script>
+        let topZIndex = 10;
+
+        const fileContents = {
+            "/etc/debian_version": "12.5 (bookworm)",
+            "/home/user/Welcome.txt": "Welcome to Debian GNU/Linux running a simulated GNOME Shell user profile environment."
+        };
+
+        const folderHierarchy = {
+            "/": ["etc", "home"],
+            "/etc": ["debian_version"],
+            "/home": ["user"],
+            "/home/user": ["Welcome.txt"]
+        };
+
+        let activePath = "/";
+
+        function toggleActivities(e) {
+            if(e) e.stopPropagation();
+            const overlay = document.getElementById('activities-menu');
+            const toggleBtn = document.getElementById('activities-toggle');
+            
+            if(overlay.style.display === 'flex') {
+                overlay.style.display = 'none';
+                toggleBtn.classList.remove('active');
+            } else {
+                overlay.style.display = 'flex';
+                toggleBtn.classList.add('active');
+            }
+        }
+
+        function closeActivities() {
+            document.getElementById('activities-menu').style.display = 'none';
+            document.getElementById('activities-toggle').classList.remove('active');
+        }
+
+        function launchApp(appId) {
+            closeActivities();
+            openWindow(appId);
+        }
+
+        function openWindow(id) {
+            if (document.getElementById(`win-${id}`)) {
+                bringToFront(document.getElementById(`win-${id}`));
+                return;
+            }
+
+            const win = document.createElement('div');
+            win.id = `win-${id}`;
+            win.className = 'window';
+            win.style.left = `${100 + (document.querySelectorAll('.window').length * 28)}px`;
+            win.style.top = `${80 + (document.querySelectorAll('.window').length * 28)}px`;
+            win.style.zIndex = ++topZIndex;
+
+            if (id === 'terminal') {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-title">user@debian: ~</div>
+                        <div class="window-controls"><button class="close-btn" onclick="closeWindow('terminal')"></button></div>
+                    </div>
+                    <div class="window-body terminal-box" onclick="document.getElementById('cli-input').focus()">
+                        <div id="term-log" class="terminal-log">Linux debian 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian v12 (bookworm)\nType 'help', 'neofetch', or 'cat /etc/debian_version'\n\n</div>
+                        <div class="prompt-line">
+                            <span class="prompt-text">user@debian:~$</span>
+                            <input type="text" id="cli-input" class="cmd-input" autocomplete="off" spellcheck="false" autofocus>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('window-container').appendChild(win);
+                setupTerminalLogic();
+            }
+            else if (id === 'explorer') {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-title">Files</div>
+                        <div class="window-controls"><button class="close-btn" onclick="closeWindow('explorer')"></button></div>
+                    </div>
+                    <div class="window-body" style="background: #1e1e2e;">
+                        <div style="padding: 4px; display: flex; gap: 8px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;">
+                            <button onclick="navigateExplorerUp()" style="background:#313244; color:#fff; border:none; padding:2px 8px; border-radius:4px; cursor:pointer;">⬆ Back</button>
+                            <span id="path-header" style="font-size:12px; color:#a6adc8;">/</span>
+                        </div>
+                        <div id="explorer-view-grid" class="explorer-grid"></div>
+                    </div>
+                `;
+                document.getElementById('window-container').appendChild(win);
+                renderExplorerContents();
+            }
+            else if (id === 'firefox') {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-title">Firefox ESR</div>
+                        <div class="window-controls"><button class="close-btn" onclick="closeWindow('firefox')"></button></div>
+                    </div>
+                    <div class="window-body" style="background:#ffffff; color:#222222; padding:20px;">
+                        <h2 style="color:#e64553;">Debian Packages Upgraded</h2>
+                        <hr style="margin:10px 0; border:0; border-top:1px solid #ccc;">
+                        <p>Welcome to Firefox Extended Support Release running stable inside standard Debian runtime matrices.</p>
+                    </div>
+                `;
+                document.getElementById('window-container').appendChild(win);
+            }
+            else if (id === 'info') {
+                win.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-title">Settings</div>
+                        <div class="window-controls"><button class="close-btn" onclick="closeWindow('info')"></button></div>
+                    </div>
+                    <div class="window-body" style="padding:20px; color:#cdd6f4; line-height:1.6;">
+                        <h3>System Properties</h3>
+                        <p style="margin-top:10px;"><b>OS Name:</b> Debian GNU/Linux 12 (bookworm)</p>
+                        <p><b>GNOME Version:</b> 43.9 Enterprise Shell</p>
+                        <p><b>Windowing System:</b> Wayland Deployment Server Layer</p>
+                    </div>
+                `;
+                document.getElementById('window-container').appendChild(win);
+            }
+
+            win.addEventListener('mousedown', () => bringToFront(win));
+        }
+
+        function setupTerminalLogic() {
+            const input = document.getElementById('cli-input');
+            const log = document.getElementById('term-log');
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const rawVal = input.value;
+                    const cleanCmd = rawVal.trim();
+                    input.value = '';
+
+                    if (!cleanCmd) return;
+                    log.textContent += `user@debian:~$ ${rawVal}\n`;
+
+                    if (cleanCmd === 'clear') {
+                        log.textContent = '';
+                        return;
+                    }
+                    if (cleanCmd === 'neofetch') {
+                        log.textContent += `               user@debian\n               -----------\n  ▄█████       OS: Debian GNU/Linux 12 x86_64\n  ▀▀▀▄▄▄       Kernel: 6.1.0-21-amd64\n  █████▀       Uptime: 10 mins\n               Shell: bash 5.2.15\n               DE: GNOME 43.9 (Adwaita Core Suite)\n\n`;
+                        return;
+                    }
+                    if (cleanCmd === 'help') {
+                        log.textContent += "System Command Shortcuts:\n  help      - Query valid shell functions\n  neofetch  - Output Debian branding banner profile matrices\n  cat [file]- Display target configuration text output inline\n  clear     - Wipe console history log stack\n\nTry running: cat /etc/debian_version\n\n";
+                        return;
+                    }
+                    if (cleanCmd.startsWith('cat ')) {
+                        const targetFile = cleanCmd.substring(4).trim();
+                        if (fileContents[targetFile]) {
+                            log.textContent += `${fileContents[targetFile]}\n\n`;
+                        } else {
+                            log.textContent += `cat: ${targetFile}: File target tracking pointer missing.\n\n`;
+                        }
+                        return;
+                    }
+
+                    log.textContent += `bash: ${cleanCmd}: standard internal execution matrix undefined.\n\n`;
+                }
+            });
+        }
+
+        function renderExplorerContents() {
+            const grid = document.getElementById('explorer-view-grid');
+            const header = document.getElementById('path-header');
+            if(!grid) return;
+
+            grid.innerHTML = '';
+            header.textContent = activePath;
+
+            const targets = folderHierarchy[activePath] || [];
+
+            targets.forEach(item => {
+                const combinedPath = activePath === "/" ? `/${item}` : `${activePath}/${item}`;
+                const checkFolder = folderHierarchy.hasOwnProperty(combinedPath);
+
+                const elementBlock = document.createElement('div');
+                elementBlock.className = "exp-item";
+                elementBlock.innerHTML = `
+                    <div class="exp-icon">${checkFolder ? '📁' : '📄'}</div>
+                    <div class="exp-label">${item}</div>
+                `;
+
+                elementBlock.onclick = function() {
+                    if (checkFolder) {
+                        activePath = combinedPath;
+                        renderExplorerContents();
+                    } else {
+                        triggerGnomeEditor(combinedPath);
+                    }
+                };
+                grid.appendChild(elementBlock);
+            });
+        }
+
+        function navigateExplorerUp() {
+            if (activePath === "/") return;
+            const pieces = activePath.split("/");
+            pieces.pop();
+            activePath = pieces.join("/") || "/";
+            renderExplorerContents();
+        }
+
+        function triggerGnomeEditor(filePath) {
+            const textWindow = document.createElement('div');
+            textWindow.id = "win-editor";
+            textWindow.className = "window";
+            textWindow.style.width = "540px";
+            textWindow.style.height = "380px";
+            textWindow.style.left = "140px";
+            textWindow.style.top = "120px";
+            textWindow.style.zIndex = ++topZIndex;
+
+            textWindow.innerHTML = `
+                <div class="window-header">
+                    <div class="window-title">Text Editor</div>
+                    <div class="window-controls"><button class="close-btn" onclick="document.getElementById('win-editor').remove()"></button></div>
+                </div>
+                <div class="window-body" style="background:#1e1e2e; padding:10px;">
+                    <div class="editor-container">
+                        <textarea id="edit-buffer" class="editor-textarea" spellcheck="false">${fileContents[filePath] || ''}</textarea>
+                        <button class="editor-save-btn" onclick="saveEditorData('${filePath}')">Save Document</button>
+                    </div>
+                </div>
+            `;
+
+            textWindow.addEventListener('mousedown', () => bringToFront(textWindow));
+            document.getElementById('window-container').appendChild(textWindow);
+
+            window.saveEditorData = function(path) {
+                fileContents[path] = document.getElementById('edit-buffer').value;
+                textWindow.remove();
+            };
+        }
+
+        function closeWindow(id) {
+            const targetElement = document.getElementById(`win-${id}`);
+            if (targetElement) targetElement.remove();
+        }
+
+        function bringToFront(windowFrame) {
+            topZIndex++;
+            windowFrame.style.zIndex = topZIndex;
+            document.querySelectorAll('.window-header').forEach(h => h.style.background = '#222230');
+            windowFrame.querySelector('.window-header').style.background = '#2d2d3f';
+        }
+
+        let draggingWindow = null;
+        let deltaX, deltaY, initialLeft, initialTop;
+
+        document.addEventListener('mousedown', function(e) {
+            const headerZone = e.target.closest('.window-header');
+            if (!headerZone || e.target.tagName === 'BUTTON') return;
+
+            draggingWindow = headerZone.parentElement;
+            bringToFront(draggingWindow);
+            deltaX = e.clientX;
+            deltaY = e.clientY;
+            initialLeft = parseInt(draggingWindow.style.left, 10) || 0;
+            initialTop = parseInt(draggingWindow.style.top, 10) || 0;
+
+            document.addEventListener('mousemove', processWindowDrag);
+            document.addEventListener('mouseup', terminalWindowDragDrop);
+        });
+
+        function processWindowDrag(e) {
+            if (!draggingWindow) return;
+            draggingWindow.style.left = `${initialLeft + (e.clientX - deltaX)}px`;
+            draggingWindow.style.top = `${initialTop + (e.clientY - deltaY)}px`;
+        }
+
+        function terminalWindowDragDrop() {
+            draggingWindow = null;
+            document.removeEventListener('mousemove', processWindowDrag);
+            document.removeEventListener('mouseup', terminalWindowDragDrop);
+        }
+
+        function synchronizeClock() {
+            const formatOptions = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('live-clock').textContent = new Date().toLocaleString('en-US', formatOptions);
+        }
+        setInterval(synchronizeClock, 1000);
+        synchronizeClock();
+    </script>
+</body>
+</html>

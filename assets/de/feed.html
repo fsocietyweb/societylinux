@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Society Linux - RSS</title>
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
+</head>
+<body>
+    <div id="loadingScreen">Lade</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
+
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="main.html">Home</a>
+    <a href="download.html">Downloads</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <a href="feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+        <h3>Nur Englishe Übersetzung</h3>
+        <h3 style="color: #00ff00; border-bottom: 1px solid #333; padding-bottom: 8px;">
+            [ SYSTEM UPDATE LOGS ]
+        </h3>
+        <p style="color: #555; font-family: monospace; margin-bottom: 25px;">
+            FETCHING CONFIG FROM REMOTE FEED... STATUS: OK
+        </p>
+
+        <div id="logs-container">
+            <p style="color: #00ff00; font-family: monospace;">Mounting filesystem data streams...</p>
+        </div>
+    </article>
+</main>
+
+<script>
+// Relative path to find your feed.xml relative to assets/tabs/
+const RSS_URL = '../rss/feed.xml'; 
+
+fetch(RSS_URL)
+    .then(response => {
+        if (!response.ok) throw new Error("Network stream failure");
+        return response.text();
+    })
+    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+    .then(data => {
+        const items = data.querySelectorAll("item");
+        let htmlOutput = "";
+
+        if(items.length === 0) {
+            htmlOutput = "<p style='color: #555;'>No logs registered in database.</p>";
+        }
+
+        items.forEach(el => {
+            const title = el.querySelector("title").textContent;
+            const description = el.querySelector("description").textContent;
+            const pubDate = el.querySelector("pubDate").textContent;
+            const link = el.querySelector("link").textContent;
+
+            const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+
+            htmlOutput += `
+                <div style="background-color: #111; border: 1px solid #222; padding: 15px; margin-bottom: 20px; font-family: monospace;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap;">
+                        <span style="color: #00ff00; font-weight: bold;">[LOG] ${title}</span>
+                        <span style="color: #555;">DATE: ${formattedDate}</span>
+                    </div>
+                    <p style="color: #aaa; margin: 5px 0 12px 0; line-height: 1.5;">${description}</p>
+                    <a href="${link}" target="_blank" style="color: #ff8c00; text-decoration: none;">> View Resource Source</a>
+                </div>
+            `;
+        });
+
+        document.getElementById("logs-container").innerHTML = htmlOutput;
+    })
+    .catch(err => {
+        document.getElementById("logs-container").innerHTML = 
+            `<p style="color: #ff0000; font-family: monospace;">[CRITICAL ERROR] Target stream unreadable.</p>`;
+        console.error(err);
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Welcome to Society Linux! A Webpage where you can download stuff use a Fake Linux and more i guess">
+    <title>Society Linux - Start</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="alternate" type="application/rss+xml" title="Society Linux RSS Feed" href="feed.xml">
+    <script src="assets/javascript/clock.js"></script>
+    <script defer>
+    window.onload = function(){ 
+        var loadScreen = document.getElementById("loadingScreen");
+        loadScreen.style.opacity = "0";
+        document.body.style.overflowY = "auto";
+        setTimeout(function(){loadScreen.style.display = "none"}, 300);
+    }
+</script>
+</head>
+<body>
+    <div id="loadingScreen">Lade</div>
+<noscript>
+    <style>
+        #loadingScreen {display: none;}
+        body {overflow-y: auto;}
+    </style>
+</noscript>
+
+<header>
+    <div>
+        <h2>Society Linux</h2>
+        <p>Linux hidden from Society</p>
+    </div>
+</header>
+
+<aside>
+    <a href="main.html">Home</a>
+    <a href="download.html">Downloads</a>
+    <a href="about.html">About</a>
+    <a href="docs.html">Docs</a>
+    <a href="feed.html">RSS</a>
+</aside>
+
+<main>
+    <article>
+        <h3>Willkommen auf der Webseite von Society Linux!</h3>
+        <p>Du wirst Society Linux bald kennenlernen. Momentan befinden wir uns noch im Beta-Stadium (Shell-Skript), aber wir bieten bereits offiziell eine Art AUR innerhalb des Skripts an: das SLR (Society Linux Repository). Es ist sehr schlank – mit weniger als 20 Paketen und einer Größe von nur wenigen Kilobyte (KB) –, aber wir werden natürlich später weitere Inhalte hinzufügen. Wir haben bereits Fortschritte gemacht!<br>
+            Ich habe mich dazu entschieden, ein anderes Design zu verwenden.
+        </p>
+
+        <p class="footer-note">Ich werde daraus eine andere Webseite machen.</p>
+    </article>
+</main>
+
+</body>
+</html>
